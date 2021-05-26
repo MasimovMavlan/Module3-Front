@@ -10,7 +10,9 @@ body {
   background-color: #d5e7f2;
   align-items: center;
 }
-
+#content-page {
+  margin-bottom: 60px;
+}
 .icons {
   height: 30px;
   padding: 6px;
@@ -55,14 +57,18 @@ main h1 {
 .textSeller,
 .textCost {
   font-size: 24px;
-  height: 24px;
+  word-break: break-all;
+  margin: 1.2vw;
 }
 
 .textSeller {
-  width: 700px;
+  min-width: 150px;
+  width: 50vw;
 }
+
 .textCost {
-  width: 200px;
+  width: 20vw;
+  min-width: 150px;
 }
 
 .blocks p {
@@ -78,25 +84,30 @@ input::-webkit-inner-spin-button {
 }
 
 .inputSellerClass {
-  width: 530px;
-}
-
-.editInputSeller {
-  width: 402px;
+  min-width: 235px;
+  width: 35vw;
 }
 
 .inputCostClass {
-  width: 270px;
+  width: 235px;
+  width: 35vw;
   font-size: 24px;
+}
+
+.editInputSeller {
+  min-width: 150px;
+  width: 35vw;
 }
 
 .editInputPrice {
   margin-right: 66px;
-  width: 180px;
+  min-width: 150px;
+  width: 15vw;
 }
 
 .editInputDate {
-  width: 208px;
+  min-width: 150px;
+  width: 15vw;
 }
 
 .inputSellerClass,
@@ -122,4 +133,37 @@ input::-webkit-inner-spin-button {
   margin-top: 5px;
   margin-bottom: 5px;
   font-size: 24px;
+}
+
+@media screen and (max-device-width: 1024px) {
+  .blocks {
+    flex-direction: column;
+    align-items: center;
+  }
+  .inputSellerClass,
+  .inputCostClass {
+    min-width: 300px;
+    width: 60vw;
+    margin: 0;
+  }
+  button {
+    min-width: 327px;
+    margin-top: 30px;
+    width: calc(60vw + 18px);
+  }
+  .subblocks p {
+    margin: 10px 0;
+  }
+  .task-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  .textSeller,
+  .textCost {
+    min-width: 300px;
+    width: 60vw;
+    text-align: center;
+    border: 1px solid #87afc7;
+    border-radius: 5px;
+  }
 }

@@ -2,15 +2,12 @@ let allCosts = [];
 let indexEdit = -1;
 let costSeller = "";
 let costPrice = "";
-let tempEditSeller = "";
-let tempEditPrice = "";
 let today = new Date();
 let day = `0${today.getDate()}`.slice(-2);
 let month = `0${today.getMonth() + 1}`.slice(-2);
 let dat = `${today.getFullYear()}-${month}-${day}`;
 const mainBlock = document.getElementById("content-page");
 
-console.log(dat);
 window.onload = newInputs = async () => {
   inputSeller = document.getElementById("inputSeller");
   inputCost = document.getElementById("inputCost");
@@ -21,7 +18,7 @@ window.onload = newInputs = async () => {
   inputSeller.addEventListener("keyup", addenter);
   inputCost.addEventListener("keyup", addenter);
   const resp = await fetch("http://localhost:8000/allCosts", { method: "GET" });
-  let result = await resp.json();
+  const result = await resp.json();
   allCosts = result.data;
   render();
 };
@@ -52,8 +49,6 @@ removeElement = async (index) => {
 // Edit Function
 editElement = (index) => {
   indexEdit = index;
-  tempEditSeller = allCosts[index].seller;
-  tempEditPrice = allCosts[index].price;
   render();
 };
 
@@ -65,14 +60,8 @@ cancelElement = () => {
 
 // Add cost on button
 onClickButton = async () => {
-  if (costSeller.trim() === "" || costPrice === "") {
-    return;
-  }
-  if (costSeller.trim().length > 40) {
-    alert("Слишком длинное название магазина");
-    return;
-  }
-  if (String(costPrice).length > 14) {
+  if (costSeller.trim() === "" || costPrice === "") return;
+  if (costPrice.trim().length > 14) {
     alert("Слишком большое число! Откуда у вас столько денег???");
     return;
   }
@@ -99,10 +88,6 @@ onClickButton = async () => {
 
 // Done Function
 doneElement = async (index, sellers, prices, dates) => {
-  if (sellers.trim().length > 40) {
-    alert("Слишком длинное название магазина");
-    return;
-  }
   if (String(prices).length > 14) {
     alert("Слишком большое число! Откуда у вас столько денег???");
     return;
@@ -145,7 +130,7 @@ render = () => {
   while (mainBlock.firstChild) mainBlock.removeChild(mainBlock.firstChild);
 
   // Add count
-  let summ = document.createElement("p");
+  const summ = document.createElement("p");
   summ.className = "summ";
   summ.type = "text";
   let testreducecoll = allCosts.reduce((a, b) => a + b.price, 0);
@@ -157,6 +142,10 @@ render = () => {
     const container = document.createElement("div");
     container.className = "task-container";
     mainBlock.appendChild(container);
+
+    ///// Add icon div
+    const containerIcon = document.createElement("div");
+    containerIcon.className = "containerIcon";
 
     /////Add Edit image button
     const editButton = document.createElement("img");
@@ -218,15 +207,15 @@ render = () => {
       container.appendChild(editInputSeller);
       container.appendChild(editInputDate);
       container.appendChild(editInputPrice);
+      container.appendChild(containerIcon);
 
       ///// Cancel click
-      container.appendChild(cancelButton);
       cancelButton.onclick = () => cancelElement();
       editInputSeller.addEventListener("keyup", cancelEsc);
       editInputPrice.addEventListener("keyup", cancelEsc);
+      containerIcon.appendChild(cancelButton);
 
       ///// Done click
-      container.appendChild(doneButton);
       doneButton.onclick = () =>
         doneElement(
           index,
@@ -234,6 +223,7 @@ render = () => {
           editInputPrice.value,
           editInputDate.value
         );
+      containerIcon.appendChild(doneButton);
     } else {
       ///// Add text block
       const textSeller = document.createElement("p");
@@ -249,12 +239,14 @@ render = () => {
       // if (!textTask.innerText) removeElement(index);
       container.appendChild(textSeller);
       container.appendChild(textPrice);
+      container.appendChild(containerIcon);
+
       ///// Edit click
-      container.appendChild(editButton);
       editButton.onclick = () => editElement(index);
+      containerIcon.appendChild(editButton);
       ///// Remove clic
-      container.appendChild(removeButton);
       removeButton.onclick = () => removeElement(index);
+      containerIcon.appendChild(removeButton);
     }
   });
 };
