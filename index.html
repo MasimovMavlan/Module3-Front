@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Document</title>
+  </head>
+  <body>
+    <main>
+      <h1>Учет моих расходов</h1>
+      <div class="blocks">
+        <div class="subblocks">
+          <p>Куда было потрачено</p>
+          <input
+            id="inputSeller"
+            class="inputSellerClass"
+            type="text"
+            placeholder="Куда было потрачено"
+          />
+        </div>
+        <div class="subblocks">
+          <p>Сколько было потрачено</p>
+          <input
+            id="inputCost"
+            class="inputCostClass"
+            type="number"
+            placeholder="Сколько было потрачено"
+          />
+        </div>
+        <button id="addButton">Добавить</button>
+      </div>
+      <div id="content-page"></div>
+    </main>
+  </body>
+  <script src="https://cdn.jsdelivr.net/npm/underscore@1.13.1/underscore-umd-min.js
+  "></script>
+  <script src="script.js"></script>
+</html>
