@@ -57,7 +57,6 @@ editElement = (index) => {
 // Cancel Function
 cancelElement = () => {
   indexEdit = -1;
-  dbClick = -1;
   render();
 };
 
@@ -126,6 +125,14 @@ addenter = (event) => {
   if (event.key == "Enter") {
     onClickButton();
   }
+};
+
+///// dbClick function
+
+dbClickfunk = (index, value) => {
+  indexEdit = index;
+  dbClick = value;
+  render();
 };
 
 ///// Render
@@ -225,32 +232,19 @@ render = () => {
     textSeller.className = "textSeller";
     textSeller.type = "text";
     textSeller.innerText = `${index + 1})Магазин "${item.seller}"`;
-    textSeller.ondblclick = () => {
-      indexEdit = index;
-      dbClick = 1;
-      render();
-    };
+    textSeller.ondblclick = () => dbClickfunk(index, 1);
 
     const textData = document.createElement("p");
     textData.className = "textData";
     textData.type = "text";
     textData.innerText = item.date;
-    textData.ondblclick = () => {
-      indexEdit = index;
-      dbClick = 2;
-      render();
-    };
+    textData.ondblclick = () => dbClickfunk(index, 2);
 
     const textPrice = document.createElement("p");
     textPrice.className = "textCost";
     textPrice.type = "text";
     textPrice.innerText = `${item.price} р.`;
-    textPrice.ondblclick = () => {
-      indexEdit = index;
-      dbClick = 3;
-      // return dbClick;
-      render();
-    };
+    textPrice.ondblclick = () => dbClickfunk(index, 3);
 
     ///// Done click
     doneButton.onclick = () =>
@@ -274,18 +268,6 @@ render = () => {
     ///// Add Task text block
     if (indexEdit === index) {
       switch (dbClick) {
-        case -1:
-          container.appendChild(textSeller);
-          container.appendChild(textData);
-          container.appendChild(textPrice);
-          container.appendChild(containerIcon);
-
-          ///// Add edit
-          containerIcon.appendChild(editButton);
-
-          ///// Add remove
-          containerIcon.appendChild(removeButton);
-          break;
         case 1:
           container.appendChild(editInputSeller);
           container.appendChild(textData);
@@ -332,6 +314,18 @@ render = () => {
 
           ///// Add done
           containerIcon.appendChild(doneButton);
+          break;
+        default:
+          container.appendChild(textSeller);
+          container.appendChild(textData);
+          container.appendChild(textPrice);
+          container.appendChild(containerIcon);
+
+          ///// Add edit
+          containerIcon.appendChild(editButton);
+
+          ///// Add remove
+          containerIcon.appendChild(removeButton);
           break;
       }
     } else {
