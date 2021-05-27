@@ -60,7 +60,7 @@ cancelElement = () => {
 
 // Add cost on button
 onClickButton = async () => {
-  if (costSeller.trim() === "" || costPrice === "") return;
+  if (!costSeller.trim() || !costPrice) return;
   if (costPrice.trim().length > 14) {
     alert("Слишком большое число! Откуда у вас столько денег???");
     return;
@@ -133,7 +133,7 @@ render = () => {
   const summ = document.createElement("p");
   summ.className = "summ";
   summ.type = "text";
-  let testreducecoll = allCosts.reduce((a, b) => a + b.price, 0);
+  const testreducecoll = allCosts.reduce((a, b) => a + b.price, 0);
   summ.innerText = `Итого:${testreducecoll} р.`;
   mainBlock.appendChild(summ);
 

@@ -10,9 +10,11 @@ body {
   background-color: #d5e7f2;
   align-items: center;
 }
+
 #content-page {
   margin-bottom: 60px;
 }
+
 .icons {
   height: 30px;
   padding: 6px;
@@ -77,7 +79,6 @@ main h1 {
 }
 
 /* Inputs */
-
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -140,24 +141,29 @@ input::-webkit-inner-spin-button {
     flex-direction: column;
     align-items: center;
   }
+
   .inputSellerClass,
   .inputCostClass {
     min-width: 300px;
     width: 60vw;
     margin: 0;
   }
+
   button {
     min-width: 327px;
     margin-top: 30px;
     width: calc(60vw + 18px);
   }
+
   .subblocks p {
     margin: 10px 0;
   }
+
   .task-container {
     flex-direction: column;
     align-items: center;
   }
+
   .textSeller,
   .textCost {
     min-width: 300px;
