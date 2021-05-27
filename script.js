@@ -13,8 +13,12 @@ window.onload = newInputs = async () => {
   inputSeller = document.getElementById("inputSeller");
   inputCost = document.getElementById("inputCost");
   addButton = document.getElementById("addButton");
-  inputSeller.addEventListener("change", inputSellerChange);
-  inputCost.addEventListener("change", inputCostChange);
+  inputSeller.addEventListener("change", (e) => {
+    costSeller = e.target.value;
+  });
+  inputCost.addEventListener("change", (e) => {
+    costPrice = e.target.value;
+  });
   addButton.addEventListener("click", onClickButton);
   inputSeller.addEventListener("keyup", addenter);
   inputCost.addEventListener("keyup", addenter);
@@ -24,43 +28,6 @@ window.onload = newInputs = async () => {
   render();
 };
 
-// Add data in cost
-inputSellerChange = (event) => {
-  costSeller = event.target.value;
-};
-
-// Add data in cost
-inputCostChange = (event) => {
-  costPrice = event.target.value;
-};
-
-// Remove Function
-removeElement = async (index) => {
-  const resp = await fetch(
-    `http://localhost:8000/deleteCost?_id=${allCosts[index]._id}`,
-    {
-      method: "DELETE",
-    }
-  );
-  let result = await resp.json();
-  allCosts = result.data;
-  render();
-};
-
-// Edit Function
-editElement = (index) => {
-  dbClick = 4;
-  indexEdit = index;
-  render();
-};
-
-// Cancel Function
-cancelElement = () => {
-  indexEdit = -1;
-  render();
-};
-
-// Add cost on button
 onClickButton = async () => {
   if (!costSeller.trim() || !costPrice) return;
   if (costPrice.trim().length > 14) {
@@ -88,7 +55,29 @@ onClickButton = async () => {
   render();
 };
 
-// Done Function
+removeElement = async (index) => {
+  const resp = await fetch(
+    `http://localhost:8000/deleteCost?_id=${allCosts[index]._id}`,
+    {
+      method: "DELETE",
+    }
+  );
+  let result = await resp.json();
+  allCosts = result.data;
+  render();
+};
+
+editElement = (index) => {
+  dbClick = 4;
+  indexEdit = index;
+  render();
+};
+
+cancelElement = () => {
+  indexEdit = -1;
+  render();
+};
+
 doneElement = async (index, sellers, prices, dates) => {
   if (String(prices).length > 14) {
     alert("Слишком большое число! Откуда у вас столько денег???");
@@ -113,21 +102,17 @@ doneElement = async (index, sellers, prices, dates) => {
   render();
 };
 
-///// Cancel on Esc Function
 cancelEsc = (event) => {
   if (event.key === "Escape") {
     cancelElement();
   }
 };
 
-///// Add task on Enter
 addenter = (event) => {
   if (event.key == "Enter") {
     onClickButton();
   }
 };
-
-///// dbClick function
 
 dbClickfunk = (index, value) => {
   indexEdit = index;
@@ -135,12 +120,26 @@ dbClickfunk = (index, value) => {
   render();
 };
 
-///// Render
+inputFunk = (types, inputname, values, classname) => {
+  inputname.type = types;
+  inputname.className = classname;
+  inputname.value = values;
+};
+
+addImg = (imgname, path) => {
+  imgname.src = `img/${path}.png`;
+  imgname.className = "icons";
+};
+
+textAddFunk = (textName, className, value, index) => {
+  textName.className = className;
+  textName.type = "text";
+  textName.ondblclick = () => dbClickfunk(index, value);
+};
+
 render = () => {
-  ///// Remove dublicate elements
   while (mainBlock.firstChild) mainBlock.removeChild(mainBlock.firstChild);
 
-  // Add count
   const summ = document.createElement("p");
   summ.className = "summ";
   summ.type = "text";
@@ -149,50 +148,25 @@ render = () => {
   mainBlock.appendChild(summ);
 
   allCosts.forEach((item, index) => {
-    ///// Add container div
     const container = document.createElement("div");
     container.className = "task-container";
     mainBlock.appendChild(container);
-
-    ///// Add icon div
     const containerIcon = document.createElement("div");
     containerIcon.className = "containerIcon";
-
-    /////Add Edit image button
     const editButton = document.createElement("img");
-    editButton.src = "img/edit.png";
-    editButton.className = "icons";
-
-    ///// Add Remove image button
+    addImg(editButton, "edit");
     const removeButton = document.createElement("img");
-    removeButton.src = "img/remove.png";
-    removeButton.className = "icons";
-
-    ///// Add Cancel image button
+    addImg(removeButton, "remove");
     const cancelButton = document.createElement("img");
-    cancelButton.src = "img/cancel.png";
-    cancelButton.className = "icons";
-
-    ///// Add Done image button
+    addImg(cancelButton, "cancel");
     const doneButton = document.createElement("img");
-    doneButton.src = "img/done.png";
-    doneButton.className = "icons";
-
-    ///// Add input block
+    addImg(doneButton, "done");
     const editInputSeller = document.createElement("input");
-    editInputSeller.type = "text";
-    editInputSeller.className = "editInputSeller";
-    editInputSeller.value = item.seller;
-
+    inputFunk("text", editInputSeller, item.seller, "editInputSeller");
     const editInputPrice = document.createElement("input");
-    editInputPrice.type = "number";
-    editInputPrice.className = "editInputPrice";
-    editInputPrice.value = item.price;
-
+    inputFunk("number", editInputPrice, item.price, "editInputPrice");
     const editInputDate = document.createElement("input");
-    editInputDate.type = "date";
-    editInputDate.className = "editInputDate";
-    editInputDate.value = item.date;
+    inputFunk("date", editInputDate, item.date, "editInputDate");
 
     editInputSeller.onkeydown = (e) => {
       if (e.key === "Enter") {
@@ -226,27 +200,16 @@ render = () => {
         );
       }
     };
-
-    ///// Add text block
     const textSeller = document.createElement("p");
-    textSeller.className = "textSeller";
-    textSeller.type = "text";
+    textAddFunk(textSeller, "textSeller", 1, index);
     textSeller.innerText = `${index + 1})Магазин "${item.seller}"`;
-    textSeller.ondblclick = () => dbClickfunk(index, 1);
-
     const textData = document.createElement("p");
-    textData.className = "textData";
-    textData.type = "text";
+    textAddFunk(textData, "textData", 2, index);
     textData.innerText = item.date;
-    textData.ondblclick = () => dbClickfunk(index, 2);
-
     const textPrice = document.createElement("p");
-    textPrice.className = "textCost";
-    textPrice.type = "text";
+    textAddFunk(textPrice, "textCost", 3, index);
     textPrice.innerText = `${item.price} р.`;
-    textPrice.ondblclick = () => dbClickfunk(index, 3);
 
-    ///// Done click
     doneButton.onclick = () =>
       doneElement(
         index,
@@ -254,18 +217,13 @@ render = () => {
         editInputPrice.value,
         editInputDate.value
       );
-    ///// Edit click
+
     editButton.onclick = () => editElement(index);
-
-    ///// Remove clic
     removeButton.onclick = () => removeElement(index);
-
-    ///// Cancel click
     cancelButton.onclick = () => cancelElement();
     editInputSeller.addEventListener("keyup", cancelEsc);
     editInputPrice.addEventListener("keyup", cancelEsc);
 
-    ///// Add Task text block
     if (indexEdit === index) {
       switch (dbClick) {
         case 1:
@@ -273,11 +231,7 @@ render = () => {
           container.appendChild(textData);
           container.appendChild(textPrice);
           container.appendChild(containerIcon);
-
-          ///// Add edit
           containerIcon.appendChild(cancelButton);
-
-          ///// Add remove
           containerIcon.appendChild(doneButton);
           break;
         case 2:
@@ -285,11 +239,7 @@ render = () => {
           container.appendChild(editInputDate);
           container.appendChild(textPrice);
           container.appendChild(containerIcon);
-
-          ///// Add edit
           containerIcon.appendChild(cancelButton);
-
-          ///// Add remove
           containerIcon.appendChild(doneButton);
           break;
         case 3:
@@ -297,11 +247,7 @@ render = () => {
           container.appendChild(textData);
           container.appendChild(editInputPrice);
           container.appendChild(containerIcon);
-
-          ///// Add edit
           containerIcon.appendChild(cancelButton);
-
-          ///// Add remove
           containerIcon.appendChild(doneButton);
           break;
         case 4:
@@ -309,10 +255,7 @@ render = () => {
           container.appendChild(editInputDate);
           container.appendChild(editInputPrice);
           container.appendChild(containerIcon);
-          ///// Add cancel
           containerIcon.appendChild(cancelButton);
-
-          ///// Add done
           containerIcon.appendChild(doneButton);
           break;
         default:
@@ -320,11 +263,7 @@ render = () => {
           container.appendChild(textData);
           container.appendChild(textPrice);
           container.appendChild(containerIcon);
-
-          ///// Add edit
           containerIcon.appendChild(editButton);
-
-          ///// Add remove
           containerIcon.appendChild(removeButton);
           break;
       }
@@ -333,11 +272,7 @@ render = () => {
       container.appendChild(textData);
       container.appendChild(textPrice);
       container.appendChild(containerIcon);
-
-      ///// Add edit
       containerIcon.appendChild(editButton);
-
-      ///// Add remove
       containerIcon.appendChild(removeButton);
     }
   });
