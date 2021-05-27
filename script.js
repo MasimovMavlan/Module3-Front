@@ -1,5 +1,6 @@
 let allCosts = [];
 let indexEdit = -1;
+let dbClick = -1;
 let costSeller = "";
 let costPrice = "";
 let today = new Date();
@@ -48,6 +49,7 @@ removeElement = async (index) => {
 
 // Edit Function
 editElement = (index) => {
+  dbClick = 4;
   indexEdit = index;
   render();
 };
@@ -55,6 +57,7 @@ editElement = (index) => {
 // Cancel Function
 cancelElement = () => {
   indexEdit = -1;
+  dbClick = -1;
   render();
 };
 
@@ -96,6 +99,7 @@ doneElement = async (index, sellers, prices, dates) => {
   allCosts[index].price = prices;
   allCosts[index].date = dates;
   indexEdit = -1;
+  dbClick = -1;
   const { _id, seller, price, date } = allCosts[index];
   const resp = await fetch("http://localhost:8000/updateCost", {
     method: "PATCH",
@@ -167,85 +171,179 @@ render = () => {
     doneButton.src = "img/done.png";
     doneButton.className = "icons";
 
-    ///// Add Task text block
-    editButton.onclick = () => editElement(index);
+    ///// Add input block
+    const editInputSeller = document.createElement("input");
+    editInputSeller.type = "text";
+    editInputSeller.className = "editInputSeller";
+    editInputSeller.value = item.seller;
 
-    if (indexEdit === index) {
-      ///// Add input block
-      const editInputSeller = document.createElement("input");
-      const editInputPrice = document.createElement("input");
-      const editInputDate = document.createElement("input");
-      editInputSeller.type = "text";
-      editInputPrice.type = "number";
-      editInputDate.type = "date";
-      editInputSeller.className = "editInputSeller";
-      editInputPrice.className = "editInputPrice";
-      editInputDate.className = "editInputDate";
-      editInputSeller.value = item.seller;
-      editInputPrice.value = item.price;
-      editInputDate.value = item.date;
-      editInputSeller.onkeydown = (e) => {
-        if (e.key === "Enter") {
-          doneElement(
-            index,
-            editInputSeller.value,
-            editInputPrice.value,
-            editInputDate.value
-          );
-        }
-      };
-      editInputPrice.onkeydown = (e) => {
-        if (e.key === "Enter") {
-          doneElement(
-            index,
-            editInputSeller.value,
-            editInputPrice.value,
-            editInputDate.value
-          );
-        }
-      };
-      container.appendChild(editInputSeller);
-      container.appendChild(editInputDate);
-      container.appendChild(editInputPrice);
-      container.appendChild(containerIcon);
+    const editInputPrice = document.createElement("input");
+    editInputPrice.type = "number";
+    editInputPrice.className = "editInputPrice";
+    editInputPrice.value = item.price;
 
-      ///// Cancel click
-      cancelButton.onclick = () => cancelElement();
-      editInputSeller.addEventListener("keyup", cancelEsc);
-      editInputPrice.addEventListener("keyup", cancelEsc);
-      containerIcon.appendChild(cancelButton);
+    const editInputDate = document.createElement("input");
+    editInputDate.type = "date";
+    editInputDate.className = "editInputDate";
+    editInputDate.value = item.date;
 
-      ///// Done click
-      doneButton.onclick = () =>
+    editInputSeller.onkeydown = (e) => {
+      if (e.key === "Enter") {
         doneElement(
           index,
           editInputSeller.value,
           editInputPrice.value,
           editInputDate.value
         );
-      containerIcon.appendChild(doneButton);
+      }
+    };
+
+    editInputPrice.onkeydown = (e) => {
+      if (e.key === "Enter") {
+        doneElement(
+          index,
+          editInputSeller.value,
+          editInputPrice.value,
+          editInputDate.value
+        );
+      }
+    };
+
+    editInputDate.onkeydown = (e) => {
+      if (e.key === "Enter") {
+        doneElement(
+          index,
+          editInputSeller.value,
+          editInputPrice.value,
+          editInputDate.value
+        );
+      }
+    };
+
+    ///// Add text block
+    const textSeller = document.createElement("p");
+    textSeller.className = "textSeller";
+    textSeller.type = "text";
+    textSeller.innerText = `${index + 1})Магазин "${item.seller}"`;
+    textSeller.ondblclick = () => {
+      indexEdit = index;
+      dbClick = 1;
+      render();
+    };
+
+    const textData = document.createElement("p");
+    textData.className = "textData";
+    textData.type = "text";
+    textData.innerText = item.date;
+    textData.ondblclick = () => {
+      indexEdit = index;
+      dbClick = 2;
+      render();
+    };
+
+    const textPrice = document.createElement("p");
+    textPrice.className = "textCost";
+    textPrice.type = "text";
+    textPrice.innerText = `${item.price} р.`;
+    textPrice.ondblclick = () => {
+      indexEdit = index;
+      dbClick = 3;
+      // return dbClick;
+      render();
+    };
+
+    ///// Done click
+    doneButton.onclick = () =>
+      doneElement(
+        index,
+        editInputSeller.value,
+        editInputPrice.value,
+        editInputDate.value
+      );
+    ///// Edit click
+    editButton.onclick = () => editElement(index);
+
+    ///// Remove clic
+    removeButton.onclick = () => removeElement(index);
+
+    ///// Cancel click
+    cancelButton.onclick = () => cancelElement();
+    editInputSeller.addEventListener("keyup", cancelEsc);
+    editInputPrice.addEventListener("keyup", cancelEsc);
+
+    ///// Add Task text block
+    if (indexEdit === index) {
+      switch (dbClick) {
+        case -1:
+          container.appendChild(textSeller);
+          container.appendChild(textData);
+          container.appendChild(textPrice);
+          container.appendChild(containerIcon);
+
+          ///// Add edit
+          containerIcon.appendChild(editButton);
+
+          ///// Add remove
+          containerIcon.appendChild(removeButton);
+          break;
+        case 1:
+          container.appendChild(editInputSeller);
+          container.appendChild(textData);
+          container.appendChild(textPrice);
+          container.appendChild(containerIcon);
+
+          ///// Add edit
+          containerIcon.appendChild(cancelButton);
+
+          ///// Add remove
+          containerIcon.appendChild(doneButton);
+          break;
+        case 2:
+          container.appendChild(textSeller);
+          container.appendChild(editInputDate);
+          container.appendChild(textPrice);
+          container.appendChild(containerIcon);
+
+          ///// Add edit
+          containerIcon.appendChild(cancelButton);
+
+          ///// Add remove
+          containerIcon.appendChild(doneButton);
+          break;
+        case 3:
+          container.appendChild(textSeller);
+          container.appendChild(textData);
+          container.appendChild(editInputPrice);
+          container.appendChild(containerIcon);
+
+          ///// Add edit
+          containerIcon.appendChild(cancelButton);
+
+          ///// Add remove
+          containerIcon.appendChild(doneButton);
+          break;
+        case 4:
+          container.appendChild(editInputSeller);
+          container.appendChild(editInputDate);
+          container.appendChild(editInputPrice);
+          container.appendChild(containerIcon);
+          ///// Add cancel
+          containerIcon.appendChild(cancelButton);
+
+          ///// Add done
+          containerIcon.appendChild(doneButton);
+          break;
+      }
     } else {
-      ///// Add text block
-      const textSeller = document.createElement("p");
-      textSeller.className = "textSeller";
-      textSeller.type = "text";
-      textSeller.innerText = `${index + 1})Магазин "${item.seller}" ${
-        item.date
-      } `;
-      const textPrice = document.createElement("p");
-      textPrice.className = "textCost";
-      textPrice.type = "text";
-      textPrice.innerText = `${item.price} р.`;
-      // if (!textTask.innerText) removeElement(index);
       container.appendChild(textSeller);
+      container.appendChild(textData);
       container.appendChild(textPrice);
       container.appendChild(containerIcon);
 
-      ///// Edit click
-      editButton.onclick = () => editElement(index);
+      ///// Add edit
       containerIcon.appendChild(editButton);
-      ///// Remove clic
-      removeButton.onclick = () => removeElement(index);
+
+      ///// Add remove
       containerIcon.appendChild(removeButton);
     }
   });

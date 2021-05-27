@@ -57,19 +57,25 @@ main h1 {
 }
 
 .textSeller,
-.textCost {
+.textCost,
+.textData {
   font-size: 24px;
   word-break: break-all;
-  margin: 1.2vw;
+  margin: 20px;
 }
 
 .textSeller {
   min-width: 150px;
-  width: 50vw;
+  width: 35vw;
 }
 
 .textCost {
-  width: 20vw;
+  width: 15vw;
+  min-width: 150px;
+}
+
+.textData {
+  width: 15vw;
   min-width: 150px;
 }
 
@@ -165,11 +171,13 @@ input::-webkit-inner-spin-button {
   }
 
   .textSeller,
-  .textCost {
+  .textCost,
+  .textData {
     min-width: 300px;
     width: 60vw;
     text-align: center;
     border: 1px solid #87afc7;
     border-radius: 5px;
+    margin: 5px;
   }
 }
