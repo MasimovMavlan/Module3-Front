@@ -13,12 +13,8 @@ window.onload = newInputs = async () => {
   inputSeller = document.getElementById("inputSeller");
   inputCost = document.getElementById("inputCost");
   addButton = document.getElementById("addButton");
-  inputSeller.addEventListener("change", (e) => {
-    costSeller = e.target.value;
-  });
-  inputCost.addEventListener("change", (e) => {
-    costPrice = e.target.value;
-  });
+  inputSeller.addEventListener("change", (e) => (costSeller = e.target.value));
+  inputCost.addEventListener("change", (e) => (costPrice = e.target.value));
   addButton.addEventListener("click", onClickButton);
   inputSeller.addEventListener("keyup", addenter);
   inputCost.addEventListener("keyup", addenter);
@@ -67,8 +63,8 @@ removeElement = async (index) => {
   render();
 };
 
-editElement = (index) => {
-  dbClick = 4;
+editElement = (index, value) => {
+  dbClick = value;
   indexEdit = index;
   render();
 };
@@ -114,16 +110,12 @@ addenter = (event) => {
   }
 };
 
-dbClickfunk = (index, value) => {
-  indexEdit = index;
-  dbClick = value;
-  render();
-};
-
-inputFunk = (types, inputname, values, classname) => {
+inputFunk = (types, values, classname) => {
+  const inputname = document.createElement("input");
   inputname.type = types;
   inputname.className = classname;
   inputname.value = values;
+  return inputname;
 };
 
 addImg = (imgname, path) => {
@@ -131,10 +123,12 @@ addImg = (imgname, path) => {
   imgname.className = "icons";
 };
 
-textAddFunk = (textName, className, value, index) => {
-  textName.className = className;
+textAddFunk = (classNames, value, index) => {
+  const textName = document.createElement("p");
+  textName.className = classNames;
   textName.type = "text";
-  textName.ondblclick = () => dbClickfunk(index, value);
+  textName.ondblclick = () => editElement(index, value);
+  return textName;
 };
 
 render = () => {
@@ -161,12 +155,9 @@ render = () => {
     addImg(cancelButton, "cancel");
     const doneButton = document.createElement("img");
     addImg(doneButton, "done");
-    const editInputSeller = document.createElement("input");
-    inputFunk("text", editInputSeller, item.seller, "editInputSeller");
-    const editInputPrice = document.createElement("input");
-    inputFunk("number", editInputPrice, item.price, "editInputPrice");
-    const editInputDate = document.createElement("input");
-    inputFunk("date", editInputDate, item.date, "editInputDate");
+    const editInputSeller = inputFunk("text", item.seller, "editInputSeller");
+    const editInputPrice = inputFunk("number", item.price, "editInputPrice");
+    const editInputDate = inputFunk("date", item.date, "editInputDate");
 
     editInputSeller.onkeydown = (e) => {
       if (e.key === "Enter") {
@@ -200,14 +191,11 @@ render = () => {
         );
       }
     };
-    const textSeller = document.createElement("p");
-    textAddFunk(textSeller, "textSeller", 1, index);
+    const textSeller = textAddFunk("textSeller", 1, index);
     textSeller.innerText = `${index + 1})Магазин "${item.seller}"`;
-    const textData = document.createElement("p");
-    textAddFunk(textData, "textData", 2, index);
+    const textData = textAddFunk("textData", 2, index);
     textData.innerText = item.date;
-    const textPrice = document.createElement("p");
-    textAddFunk(textPrice, "textCost", 3, index);
+    const textPrice = textAddFunk("textCost", 3, index);
     textPrice.innerText = `${item.price} р.`;
 
     doneButton.onclick = () =>
@@ -218,7 +206,7 @@ render = () => {
         editInputDate.value
       );
 
-    editButton.onclick = () => editElement(index);
+    editButton.onclick = () => editElement(index, 4);
     removeButton.onclick = () => removeElement(index);
     cancelButton.onclick = () => cancelElement();
     editInputSeller.addEventListener("keyup", cancelEsc);
